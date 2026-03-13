@@ -1,0 +1,39 @@
+# Runs the JavaFX Tetris game from https://github.com/BenJeau/JavaFX-Tetris
+#
+# Build:
+#   docker build -f Dockerfile.tetris -t tetris .
+#
+# Run (Linux host — X11 forwarding):
+#   xhost +local:docker
+#   docker run -it --rm \
+#     -e DISPLAY=$DISPLAY \
+#     -v /tmp/.X11-unix:/tmp/.X11-unix \
+#     tetris
+#
+# Run (macOS host — requires XQuartz):
+#   1. Install XQuartz: https://www.xquartz.org
+#   2. Open XQuartz → Preferences → Security → enable "Allow connections from network clients"
+#   3. Restart XQuartz, then:
+#      xhost + 127.0.0.1
+#      docker run -it --rm \
+#        -e DISPLAY=host.docker.internal:0 \
+#        tetris
+
+FROM ubuntu:18.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+        openjdk-8-jdk \
+        openjfx \
+        wget \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+RUN wget -q -O Tetris.jar \
+    https://raw.githubusercontent.com/BenJeau/JavaFX-Tetris/refs/heads/master/Tetris.jar
+
+ENV DISPLAY=:0
+
+ENTRYPOINT ["java", "-jar", "Tetris.jar"]
