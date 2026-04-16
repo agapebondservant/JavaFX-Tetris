@@ -1,50 +1,61 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "docs/custom-guidelines.md"
+  ],
+  "autoupdate": false,
+  "agent": {
+    "default": {
+      "steps": 15
+    }
+  },
+  "plugin": [
+    "opencode-plugin-openspec"
+  ],
+  "lsp": {
+     "python": {
+        "command": ["pylsp"]
+     },
+     "java": {
+        "command": ["/opt/jdtls/bin/jdtls"],
+        "args": ["-data", "/workspace/.jdtls/workspace"],
+        "initialization": {
+          "settings": {
+            "java": {
+              "configuration": {
+                "runtimes": [
+                  { "name": "JavaSE-1.8", "path": "/usr/lib/jvm/java-8"  },
+                  { "name": "JavaSE-11",  "path": "/usr/lib/jvm/java-11" },
+                  { "name": "JavaSE-17",  "path": "/usr/lib/jvm/java-17" },
+                  { "name": "JavaSE-21",  "path": "/usr/lib/jvm/java-21", "default": true },
+                  { "name": "JavaSE-25",  "path": "/usr/lib/jvm/java-25" }
+                ]
+              }
+            }
+          }
+        }
+     }
+  },
   "provider": {
-    "anthropic": {
-      "options": {
-        "timeout": 600000,
-        "chunkTimeout": 30000,
-        "setCacheKey": true
-      }
-    },
     "vllm": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "vLLM Server",
       "options": {
-        "baseURL": "http://localhost:8000/v1"
-      },
-      "models": {
-        "qwen3-coder-30b": {
-          "name": "Qwen/Qwen3-Coder-30B-A3B-Instruct"
-        }
-      }
-    },
-    "openrouter": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "OpenRouter",
-      "options": {
-        "baseURL": "https://openrouter.ai/api/v1",
-        "apiKey": "{env:OPENROUTER_API_KEY}",
+        "baseURL": "{env:CODE_LLM_API_BASE}",
+        "apiKey": "{env:CODE_LLM_TOKEN}",
         "timeout": 600000,
         "chunkTimeout": 30000,
         "setCacheKey": true
       },
       "models": {
-        "meta-llama/llama-4-maverick": {
-          "name": "meta-llama/llama-4-maverick"
+        "mistralai/ministral-14b-2512": {
+          "name": "mistralai/ministral-14b-2512"
         },
         "mistralai/devstral-2512": {
           "name": "mistralai/devstral-2512"
-        },
-        "openai/gpt-oss-120b": {
-          "name": "openai/gpt-oss-120b"
-        },
-        "mistralai/ministral-14b-2512": {
-          "name": "mistralai/ministral-14b-2512"
         }
       }
     }
   },
-  "model": "openrouter/mistralai/ministral-14b-2512"
+  "model": "vllm/mistralai/devstral-2512"
 }
