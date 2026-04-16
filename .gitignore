@@ -1,2 +1,4 @@
 *.class
 .vscode
+tmp/
+temp/
